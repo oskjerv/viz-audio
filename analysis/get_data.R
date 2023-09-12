@@ -11,21 +11,9 @@ tracks <- readxl::read_excel("../data/tracks.xlsx") %>%
   rename(id = `...1`) %>% 
   select(id, end_of_fade_in, start_of_fade_out, loudness, tempo, tempo_confidence, time_signature, time_signature_confidence, key, key_confidence, mode, mode_confidence)
 
-bars <- 
-  lapply(datafiles[str_detect(datafiles, "bars")], function(x){
-    #if(str_detect(x, "bars")){
-      readxl::read_excel(x) %>% 
-      mutate(
-        id = str_extract(x, "[^_]+"),
-        id = str_remove(id, "../data/")
-        )
-    #}
-  }) %>% 
-  bind_rows() %>% 
-  select(-`...1`)
 
-tatums <- 
-  lapply(datafiles[str_detect(datafiles, "tatums")], function(x){
+import_data <- function(files, str){
+  lapply(files[str_detect(files, str)], function(x){
     #if(str_detect(x, "bars")){
     readxl::read_excel(x) %>% 
       mutate(
@@ -34,45 +22,12 @@ tatums <-
       )
     #}
   }) %>% 
-  bind_rows() %>% 
-  select(-`...1`)
+    bind_rows() %>% 
+    select(-starts_with("...1"))
+}
 
-segments <- 
-  lapply(datafiles[str_detect(datafiles, "segments")], function(x){
-    #if(str_detect(x, "bars")){
-    readxl::read_excel(x) %>% 
-      mutate(
-        id = str_extract(x, "[^_]+"),
-        id = str_remove(id, "../data/")
-      )
-    #}
-  }) %>% 
-  bind_rows() %>% 
-  select(-`...1`)
-
-sections <- 
-  lapply(datafiles[str_detect(datafiles, "sections")], function(x){
-    #if(str_detect(x, "bars")){
-    readxl::read_excel(x) %>% 
-      mutate(
-        id = str_extract(x, "[^_]+"),
-        id = str_remove(id, "../data/")
-      )
-    #}
-  }) %>% 
-  bind_rows() %>% 
-  select(-`...1`)
-
-beats <- 
-  lapply(datafiles[str_detect(datafiles, "beats")], function(x){
-    #if(str_detect(x, "bars")){
-    readxl::read_excel(x) %>% 
-      mutate(
-        id = str_extract(x, "[^_]+"),
-        id = str_remove(id, "../data/")
-      )
-    #}
-  }) %>% 
-  bind_rows() %>% 
-  select(-`...1`)
-
+bars <- import_data(datafiles, "bars")
+tatums <- import_data(datafiles, "tatums")
+segments <- import_data(datafiles, "segments")
+sections <- import_data(datafiles, "sections")
+beats <- import_data(datafiles, "beats")
