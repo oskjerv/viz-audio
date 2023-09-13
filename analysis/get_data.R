@@ -12,18 +12,21 @@ tracks <- readxl::read_excel("../data/tracks.xlsx") %>%
   select(id, end_of_fade_in, start_of_fade_out, loudness, tempo, tempo_confidence, time_signature, time_signature_confidence, key, key_confidence, mode, mode_confidence)
 
 
-import_data <- function(files, str){
-  lapply(files[str_detect(files, str)], function(x){
-    #if(str_detect(x, "bars")){
-    readxl::read_excel(x) %>% 
-      mutate(
-        id = str_extract(x, "[^_]+"),
-        id = str_remove(id, "../data/")
-      )
-    #}
-  }) %>% 
-    bind_rows() %>% 
-    select(-starts_with("...1"))
+import_data <- 
+  function(files, str){
+  suppressMessages({
+    lapply(files[str_detect(files, str)], function(x){
+      #if(str_detect(x, "bars")){
+      readxl::read_excel(x) %>% 
+        mutate(
+          id = str_extract(x, "[^_]+"),
+          id = str_remove(id, "../data/")
+        )
+      #}
+    }) %>% 
+      bind_rows() %>% 
+      select(-starts_with("...1"))
+  })
 }
 
 bars <- import_data(datafiles, "bars")
