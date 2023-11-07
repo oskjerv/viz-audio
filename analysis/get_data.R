@@ -5,7 +5,10 @@ datafiles <- list.files("../data/", full.names = TRUE)
 
 
 album <- readxl::read_excel("../data/album.xlsx") %>% 
-  select(id, name, duration_ms, track_number)
+  select(id, name, duration_ms, track_number) %>% 
+  mutate(
+    name = fct_reorder(name, track_number)
+  )
 
 tracks <- readxl::read_excel("../data/tracks.xlsx") %>% 
   rename(id = `...1`) %>% 
